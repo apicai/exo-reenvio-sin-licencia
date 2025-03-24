@@ -29,14 +29,14 @@ El procedimiento ha sido probado contra un tenant M365 utilizando:
 
 | Id | Nombre | Descripción | Opcional | Módulos | Permisos |
 |:---:|---|---|---|---|---|
-| ① | [`constantes.ps1`](./scripts/constantes.ps1) | Propiedades comunes de configuración | No | Ninguno | Ninguno |
-| ② | [`0-instalar-modulos.ps1`](./scripts/0-instalar-modulos.ps1) | Instala las dependencias necesarias | No | Ninguno | Ninguno |
-| ③ | [`detalles-buzones.ps1`](./scripts/detalles-buzones.ps1) | Lista los detalles de los buzones con reenvío a procesar | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` + `ImportExcel` | Recipient Management + Microsoft Graph: `User.Read.All` + `Organization.Read.All` |
-| ④ | [`1-convertir-buzones.ps1`](./scripts/1-convertir-buzones.ps1) | Convierte los buzones a compartidos | No | `ExchangeOnlineManagement` | Recipient Management |
-| ⑤ | [`2-reducir-buzones.ps1`](./scripts/2-reducir-buzones.ps1) | Reduce el tamaño de los buzones | Sí | `ExchangeOnlineManagement` | Recipient Management + Administración de retención |
-| ⑥ | [`3-desasignar-grupo-licencias.ps1`](./scripts/3-desasignar-grupo-licencias.ps1) | Saca del grupo de licencias indicado a los usuarios de los buzones | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` | Recipient Management + Microsoft Graph: `User.Read.All` + `Group.ReadWrite.All` |
-| ⑦ | [`4-desasignar-licencias.ps1`](./scripts/4-desasignar-licencias.ps1) | Quita la licencia indicada a los usuarios de los buzones | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` | Recipient Management + Microsoft Graph: `User.ReadWrite.All` + `Organization.Read.All` |
-| ⑧ | [`marcha-atras.ps1`](./scripts/marcha-atras.ps1) | Restaura el estado inicial de los buzones | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` | Recipient Management + Administración de retención + Microsoft Graph: `User.ReadWrite.All` + `Organization.Read.All` + `Group.ReadWrite.All` |
+| ① | [`constantes.ps1`](#-configuración) | Propiedades comunes de configuración | No | Ninguno | Ninguno |
+| ② | [`0-instalar-modulos.ps1`](#-instalación) | Instala las dependencias necesarias | No | Ninguno | Ninguno |
+| ③ | [`detalles-buzones.ps1`](#-detalles-de-los-buzones-a-procesar) | Lista los detalles de los buzones con reenvío a procesar | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` + `ImportExcel` | Recipient Management + Microsoft Graph: `User.Read.All` + `Organization.Read.All` |
+| ④ | [`1-convertir-buzones.ps1`](#-conversión-a-buzones-compartidos) | Convierte los buzones a compartidos | No | `ExchangeOnlineManagement` | Recipient Management |
+| ⑤ | [`2-reducir-buzones.ps1`](#-reducción-del-tamaño-de-los-buzones-opcional) | Reduce el tamaño de los buzones | Sí | `ExchangeOnlineManagement` | Recipient Management + Administración de retención |
+| ⑥ | [`3-desasignar-grupo-licencias.ps1`](#-desasignación-de-grupo-de-licencias-opcional) | Saca del grupo de licencias indicado a los usuarios de los buzones | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` | Recipient Management + Microsoft Graph: `User.Read.All` + `Group.ReadWrite.All` |
+| ⑦ | [`4-desasignar-licencias.ps1`](#-desasignación-de-licencia-opcional) | Quita la licencia indicada a los usuarios de los buzones | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` | Recipient Management + Microsoft Graph: `User.ReadWrite.All` + `Organization.Read.All` |
+| ⑧ | [`marcha-atras.ps1`](#-marcha-atrás) | Restaura el estado inicial de los buzones | Sí | `ExchangeOnlineManagement` + `Microsoft.Graph v2.24.0` | Recipient Management + Administración de retención + Microsoft Graph: `User.ReadWrite.All` + `Organization.Read.All` + `Group.ReadWrite.All` |
 
 Los scripts que requieran permisos, **abrirán automáticamente una página en el navegador** para hacer login con un usuario que tenga los permisos necesarios en ExchangeOnlineManagement y otra página para hacer login con un usuario con los permisos necesarios en Microsoft Graph.
 
