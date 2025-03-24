@@ -44,55 +44,57 @@ Los scripts que requieran permisos, **abrirán automáticamente una página en e
 
 El fichero [`constantes.ps1`](./scripts/constantes.ps1) se debe editar y actualizar con el dominio de reenvío configurado en los buzones a procesar. Por ejemplo, si un subconjunto de los usuarios migran su correo a `@subdominio.dominio.com` y `@dominio.com`, basta configurar `DOMINIO_FW` con `dominio.com`. El resto de variables no se deben tocar a menos que se sepa lo que se hace.
 
-## Instalación
+### Instalación
 
 Se debe ejecutar [`0-instalar-modulos.ps1`](./scripts/0-instalar-modulos.ps1) para instalar las dependencias necesarias: `ExchangeOnlineManagement`, `Microsoft.Graph` (importante utilizar específicamente la v2.24.0) e `ImportExcel`.
 
-## Detalles de los buzones a procesar
+### Detalles de los buzones a procesar
 
 Puedes ejecutar en cualquier momento el script [`detalles-buzones.ps1`](./scripts/detalles-buzones.ps1) para ver los detalles de los buzones objetivo que se procesarán: dirección email del buzón, tipo de buzón, dirección email configurada para el reenvío, política de retención actual, tamaño del buzón en GB y licencias del usuario del buzón. También se generará un fichero Excel con los datos en ese momento. **Es recomendable ejecutar este script tras cada paso del procedimiento** ya que hay algunas operaciones que tardan en consolidarse.
 
-## Conversión a buzones compartidos
+### Conversión a buzones compartidos
 
-El script principal a ejecutar para convertir los buzones objetivo con el reenvío al dominio configurado es [`1-convertir-buzones.ps1`](./scripts/1-convertir-buzones.ps1). Machaca el valor que hubiera en `CustomAttribute15` para marcar sus cambios. Puedes ejecutarlo con `-WhatIf` para ver cuáles se procesarían sin alterar nada.
+El script principal a ejecutar para convertir los buzones objetivo con el reenvío al dominio configurado es [`1-convertir-buzones.ps1`](./scripts/1-convertir-buzones.ps1). Este script machaca el valor que hubiera en `CustomAttribute15` para marcar sus cambios. Puedes ejecutarlo con `-WhatIf` para ver cuáles se procesarían sin alterar nada.
 
-<video src="https://github.com/apicai/exo-reenvio-sin-licencia/raw/refs/heads/main/videos/1-convertir-buzones.mp4"/>
+https://github.com/user-attachments/assets/827b6f28-371d-42d5-9f96-eb454623cc9d
 
 ## Reducción del tamaño de los buzones (opcional)
 
-Ejecuta [`2-reducir-buzones.ps1`](./scripts/2-reducir-buzones.ps1) para reducir el tamaño de los buzones objetivo en caso de que ocupen más de 50 GB. Se utilizará una política de retención para borrar **⚠️ permanentemente ⚠️** los correos con una antigüedad mayor a 1 año, y se iniciará el asistente para disparar su ejecución (dentro de las próximas 24 horas). Machaca el valor que hubiera en `CustomAttribute14` para guardar la política de retención anterior. Si decidieras no ejecutar este script, aquellos buzones convertidos con mas de 50 GB y sin licencia no reenviarían los correos.
+Ejecuta [`2-reducir-buzones.ps1`](./scripts/2-reducir-buzones.ps1) para reducir el tamaño de los buzones objetivo en caso de que ocupen más de 50 GB. Se utilizará una política de retención para **⚠️ borrar permanentemente los correos con una antigüedad mayor a 1 año ⚠️** , y se iniciará el asistente para disparar su ejecución (dentro de las próximas 24 horas). Este script machaca el valor que hubiera en `CustomAttribute14` para guardar la política de retención anterior. Si decidieras no ejecutar este script, aquellos buzones convertidos con mas de 50 GB y sin licencia no reenviarían los correos.
 
 | Parámetro | Descripción | Valor por defecto |
 |---|---|---|
 | `-GbBuzonesALimpiar` | Tamaño en GB de los buzones a los que aplicar la política de borrado | 49 |
 | `-AntiguedadDiasCorreosABorrar` | Antigüedad en días de los correos que se borrarán permanentemente | 366 |
 | `-ReglasNecesarias` | Nombres de las reglas (ya existentes en tu EXO) que necesites añadir a estos buzones para su mantenimiento | Ninguno |
-| `-WhatIf` | Soporte parcial al modo de prueba ya que el script siempre crea la regla y la política de borrado aunque no la aplica a los buzones | Ninguno |
+| `-WhatIf` | Soporte parcial al modo de prueba ya que el script siempre crea la regla y la política de borrado pero sin aplicarla a los buzones | Ninguno |
 
-
+https://github.com/user-attachments/assets/f1f27d45-dcae-4690-b84f-e963aa675980
 
 ## Desasignación de grupo de licencias (opcional)
 
-Ejecuta [`3-desasignar-grupo-licencias.ps1`](./scripts/3-desasignar-grupo-licencias.ps1) si en tu tenant de M365 la licencia se asignó a los usuarios de los buzones objetivo utilizando un grupo de licencias (deberás consultar su nombre en la administración de licencias). Machaca el valor que hubiera en `CustomAttribute13` para guardar el ID del grupo al que pertenecía. Si no ejecutaras este script, deberás desasignar las licencias de los buzones compartidos por otro medio para conseguir el ahorro.
+Ejecuta [`3-desasignar-grupo-licencias.ps1`](./scripts/3-desasignar-grupo-licencias.ps1) si en tu tenant de M365 la licencia se asignó a los usuarios de los buzones objetivo utilizando un grupo de licencias (deberás consultar su nombre en la administración de licencias). Este script machaca el valor que hubiera en `CustomAttribute13` para guardar el ID del grupo al que pertenecía. Si no ejecutaras este script, deberás desasignar las licencias de los buzones compartidos por otro medio para conseguir el ahorro.
 
 | Parámetro | Descripción | Obligatorio |
 |---|---|---|
 | `-NombreGrupoLicencias` | Nombre del grupo de licencias del que sacar a los usuarios de los buzones a procesar | Sí |
 | `-WhatIf` | Para probar el funcionamiento sin realmente sacar a los usuarios del grupo de licencias | No |
 
-
+https://github.com/user-attachments/assets/6cba1a3c-da85-4ab0-a63c-632063e0a631
 
 ## Desasignación de licencia (opcional)
 
-Ejecuta [`4-desasignar-licencias.ps1`](./scripts/4-desasignar-licencias.ps1) si en tu tenant de M365 la licencia se asignó de forma individual a cada usuario de los buzones objetivo. Deberás indicar el nombre de la licencia (SkuPartNumber) que puedes consultar con el script de `detalles-buzones.ps1`. Machaca el valor que hubiera en `CustomAttribute12` para guardar la licencia que tenía. Si no ejecutaras este script, deberás desasignar las licencias de los buzones compartidos por otro medio para conseguir el ahorro.
+Ejecuta [`4-desasignar-licencias.ps1`](./scripts/4-desasignar-licencias.ps1) si en tu tenant de M365 la licencia se asignó de forma individual a cada usuario de los buzones objetivo. Deberás indicar el nombre de la licencia (SkuPartNumber) que puedes consultar con el script de `detalles-buzones.ps1`. Este script machaca el valor que hubiera en `CustomAttribute12` para guardar la licencia que tenía. Si no ejecutaras este script, deberás desasignar las licencias de los buzones compartidos por otro medio para conseguir el ahorro.
 
 | Parámetro | Descripción | Obligatorio |
 |---|---|---|
 | `-NombreLicencia` | Nombre de la licencia a desasignar a los usuarios de los buzones a procesar | Sí |
 | `-WhatIf` | Para probar el funcionamiento sin realmente alterar las licencias de los usuarios | No |
 
-
+https://github.com/user-attachments/assets/4c667ae7-b39e-4a01-835c-628f23ce2f26
 
 ## Marcha atrás
 
-Ejecuta [`marcha-atras.ps1`](./scripts/marcha-atras.ps1) para deshacer los pasos que se hubieran ejecutado y dejar los buzones configurados como inicialmente estaban. Sin embargo, **no se podrán recuperar los correos borrados** si el script de `2-reducir-buzones.ps1` aplicó la política de borrado a algunos de los buzones objetivo. Utiliza los valores guardados en los atributos personalizados de los buzones `CustomAttribute12` a `CustomAttribute15` para restaurar los cambios. Puedes ejecutarlo con `-WhatIf` para ver cuáles se procesarían sin alterar nada.
+Ejecuta [`marcha-atras.ps1`](./scripts/marcha-atras.ps1) para deshacer los pasos que se hubieran ejecutado y dejar los buzones configurados como inicialmente estaban. Sin embargo, **no se podrán recuperar los correos borrados** si el script de `2-reducir-buzones.ps1` aplicó la política de borrado a algunos de los buzones objetivo. Este script utiliza los valores guardados en los atributos personalizados de los buzones `CustomAttribute12` a `CustomAttribute15` para restaurar los cambios. Puedes ejecutarlo con `-WhatIf` para ver cuáles se procesarían sin alterar nada.
+
+
