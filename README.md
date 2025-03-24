@@ -97,5 +97,5 @@ https://github.com/user-attachments/assets/4c667ae7-b39e-4a01-835c-628f23ce2f26
 
 Ejecuta [`marcha-atras.ps1`](./scripts/marcha-atras.ps1) para deshacer los pasos que se hubieran ejecutado y dejar los buzones configurados como inicialmente estaban. Sin embargo, **no se podrán recuperar los correos borrados** si el script de `2-reducir-buzones.ps1` aplicó la política de borrado a algunos de los buzones objetivo. Este script utiliza los valores guardados en los atributos personalizados de los buzones `CustomAttribute12` a `CustomAttribute15` para restaurar los cambios. Puedes ejecutarlo con `-WhatIf` para ver cuáles se procesarían sin alterar nada.
 
-https://github.com/user-attachments/assets/e6b2478f-db51-4686-9759-d8d67a12464a
+https://github.com/user-attachments/assets/3a4e91d6-28a5-439e-9e76-629b83b60bfb
 
