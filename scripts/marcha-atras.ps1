@@ -55,7 +55,12 @@ $buzonesCompartidosConFw | ForEach-Object {
 
   Set-Mailbox -Identity $buzon -CustomAttribute12 $licenciaAnterior -CustomAttribute13 $grupoLicenciasAnterior -CustomAttribute14 $politicaRetencionAnterior -CustomAttribute15 $buzonUsuarioConvertido -WhatIf:$WhatIfPreference -ErrorAction SilentlyContinue
 
-  Write-Output "${buzon}: marcha atras tipo-buzon: $( $buzonUsuarioConvertido ? 'KO' : 'ok' ), politica-retencion: $( $politicaRetencionAnterior ? 'KO' : 'ok' ), grupo-licencias: $( $grupoLicenciasAnterior ? 'KO' : 'ok' ), licencias: $( $licenciaAnterior ? 'KO' : 'ok' )"
+  $resultadoTipoBuzon = if ($buzonUsuarioConvertido) { "KO" } else { "ok" }
+  $resultadoPolitica = if ($politicaRetencionAnterior) { "KO" } else { "ok" }
+  $resultadoGrupo = if ($grupoLicenciasAnterior) { "KO" } else { "ok" }
+  $resultadoLicencia = if ($licenciaAnterior) { "KO" } else { "ok" }
+
+  Write-Output "${buzon}: marcha atras tipo-buzon: ${resultadoTipoBuzon}, politica-retencion: ${resultadoPolitica}, grupo-licencias: ${resultadoGrupo}, licencias: ${resultadoLicencia}"
 }
 
 $politicaRentencionAnterior = "${PREFIJO_POLITICA_RETENCION}${DOMINIO_FW}"

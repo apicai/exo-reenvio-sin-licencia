@@ -42,13 +42,12 @@ $tabla = $buzones | ForEach-Object {
     Tamano = $gb
     Licencias = if ($licencias) { $licencias } else { "No tiene" }
   }
-} 
-| Select-Object @{n="Buzon";e={$_.Email}},
-                @{n="Tipo";e={$_.Tipo}},
-                @{n="Reenvio";e={$_.Reenvio}},
-                @{n="Politica";e={$_.Politica}},
-                @{n="Tamano GB";e={$_.Tamano}},
-                @{n="Licencias";e={$_.Licencias}}
+} | Select-Object @{n="Buzon";e={$_.Email}},
+                  @{n="Tipo";e={$_.Tipo}},
+                  @{n="Reenvio";e={$_.Reenvio}},
+                  @{n="Politica";e={$_.Politica}},
+                  @{n="Tamano GB";e={$_.Tamano}},
+                  @{n="Licencias";e={$_.Licencias}}
 
 $tabla | Format-Table -AutoSize
 
