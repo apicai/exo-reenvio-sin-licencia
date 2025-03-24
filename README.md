@@ -1,17 +1,17 @@
 # Automatización reenvío sin licencia en Exchange Online
 
-Este repositorio te será útil si quieres evitar el coste de mantener licencias para aquellos usuarios de tu instancia de Exchange Online que no utilicen para nada el servicio ya que tienen configurado el reenvío a otro correo en un proveedor y dominio diferente. También te será útil para ahorrar si un subconjunto de tus usuarios migran su correo a otro proveedor y dominio, y se deban reenviar sus correos a su nueva dirección durante un tiempo para garantizarles una transición razonable.
+Este repositorio te será útil si quieres evitar el coste de mantener licencias para aquellos usuarios de tu instancia de Exchange Online que no utilicen para nada el servicio ya que tienen configurado el reenvío a otro correo en un proveedor y dominio diferente. También te será útil si un subconjunto de tus usuarios migran su correo a otro proveedor y dominio, y se deban reenviar sus correos a su nueva dirección durante un tiempo para garantizarles una transición razonable.
 
 ## Procedimiento
 
 Los buzones personales se convertirán en buzones compartidos que no requieren licencia. **Dichos buzones deben tener ya configurado el reenvío al nuevo correo para que los scripts detecten qué buzones convertir**. El procedimiento se caracteriza por:
 
-- No necesitar listados de buzones a convertir: basta con indicar el dominio del correo configurado en el reenvío
+- No necesitar listados de buzones a convertir: basta con indicar el dominio del correo que tienen configurado en el reenvío
 - Estar dividido en scripts con pasos opcionales en función de las necesidades particulares de cada tenant M365
 - Reducir el tamaño de los buzones si fuera necesario para poder convertirlos a compartidos (que tienen un tamaño máximo de 50 Gb)
 - Desasignar las licencias tanto heredadas como asignadas individualmente a los buzones una vez convertidos
-- Soportar el modo de prueba (con `-WhatIf`)
-- Volcar el estado de los buzones a un fichero Excel
+- Volcar a un fichero Excel el estado de los buzones tras cada paso
+- Poder ejecutarse en modo de prueba (con `-WhatIf`)
 - Disponer de marcha atrás de todo el proceso
 - Ser idempotente de modo que los scripts se pueden ejecutar repetidamente (o reintentar en caso de fallos) sin efectos indeseados, y alcanzar el mismo resultado que se hubiera obtenido al ejecutarlo de una sola vez
 
@@ -21,7 +21,7 @@ El procedimiento ha sido probado contra un tenant M365 utilizando:
 
 - PowerShell v7.5.0 (puede ser suficiente con la v5.1)
 - Módulo Exchange Online Management v3.7.1 (puede ser suficiente con la v2.0.3)
-- Módulo Microsoft Graph v2.24.0 (no valen las v2.25.0 a v2.26.1 por un bug) (solo necesario para los scripts opcionales)
+- Módulo Microsoft Graph v2.24.0 (no valen las v2.25.0 a v2.26.1 [por un error en ellas](https://github.com/microsoftgraph/msgraph-sdk-powershell/issues/3201)) (solo necesario para los scripts opcionales)
 - Módulo Import Excel v7.8.10 (opcional)
 - Un usuario administrador de Exchange Online en el grupo de roles "Administración de la organización" (para el script principal basta con "Recipient Management")
 
@@ -40,23 +40,23 @@ El procedimiento ha sido probado contra un tenant M365 utilizando:
 
 Los scripts que requieran permisos, **abrirán automáticamente una página en el navegador** para hacer login con un usuario que tenga los permisos necesarios en ExchangeOnlineManagement y otra página para hacer login con un usuario con los permisos necesarios en Microsoft Graph.
 
-## Configuración
+### Configuración
 
-El fichero [`constantes.ps1`](./scripts/constantes.ps1) se debe editar y actualizar con el dominio de reenvío configurado en los buzones a procesar. Por ejemplo, si un subconjunto de los usuarios migran su correo a `@subdominio.dominio.com` y/o `@dominio.com`, basta configurar `DOMINIO_FW` con `dominio.com`. El resto de variables no se deben tocar a menos que se sepa lo que se hace.
+El fichero [`constantes.ps1`](./scripts/constantes.ps1) se debe editar y actualizar con el dominio de reenvío configurado en los buzones a procesar. Por ejemplo, si un subconjunto de los usuarios migran su correo a `@subdominio.dominio.com` y `@dominio.com`, basta configurar `DOMINIO_FW` con `dominio.com`. El resto de variables no se deben tocar a menos que se sepa lo que se hace.
 
 ## Instalación
 
-Se debe ejecutar [`0-instalar-modulos.ps1`](./scripts/0-instalar-modulos.ps1) para instalar las dependencias necesarias: `ExchangeOnlineManagement`, `Microsoft.Graph` (importante utilizar específicamente la v2.24.0) y `ImportExcel`.
+Se debe ejecutar [`0-instalar-modulos.ps1`](./scripts/0-instalar-modulos.ps1) para instalar las dependencias necesarias: `ExchangeOnlineManagement`, `Microsoft.Graph` (importante utilizar específicamente la v2.24.0) e `ImportExcel`.
 
 ## Detalles de los buzones a procesar
 
-Puedes ejecutar en cualquier momento el script [`detalles-buzones.ps1`](./scripts/detalles-buzones.ps1) para ver los detalles de los buzones objetivo que se procesarán: dirección email del buzón, tipo de buzón, dirección email configurada para el reenvío, política de retención actual, tamaño del buzón en GB y licencias del usuario del buzón. También se generará un fichero Excel con los datos en ese momento. **Es recomendable ejecutar este script tras cada paso del procedimiento** ya que hay algunas operaciones que tardan tiempo en consolidarse.
+Puedes ejecutar en cualquier momento el script [`detalles-buzones.ps1`](./scripts/detalles-buzones.ps1) para ver los detalles de los buzones objetivo que se procesarán: dirección email del buzón, tipo de buzón, dirección email configurada para el reenvío, política de retención actual, tamaño del buzón en GB y licencias del usuario del buzón. También se generará un fichero Excel con los datos en ese momento. **Es recomendable ejecutar este script tras cada paso del procedimiento** ya que hay algunas operaciones que tardan en consolidarse.
 
 ## Conversión a buzones compartidos
 
 El script principal a ejecutar para convertir los buzones objetivo con el reenvío al dominio configurado es [`1-convertir-buzones.ps1`](./scripts/1-convertir-buzones.ps1). Machaca el valor que hubiera en `CustomAttribute15` para marcar sus cambios. Puedes ejecutarlo con `-WhatIf` para ver cuáles se procesarían sin alterar nada.
 
-
+<video src="https://github.com/apicai/exo-reenvio-sin-licencia/raw/refs/heads/main/videos/1-convertir-buzones.mp4">
 
 ## Reducción del tamaño de los buzones (opcional)
 
