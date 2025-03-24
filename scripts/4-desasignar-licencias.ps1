@@ -30,7 +30,7 @@ $buzonesCompartidosConFw | ForEach-Object {
       Write-Output "${buzon}: licencia desasignada"
     }
   } catch {
-    Write-Error "${buzon}: error al procesar buzón - $_"
+    Write-Error "${buzon}: error al procesar buzon - $_"
   }
 }
 

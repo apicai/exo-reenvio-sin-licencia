@@ -2,7 +2,7 @@
 
 [CmdletBinding(SupportsShouldProcess)]
 param(
-  [Parameter(Mandatory=$true, HelpMessage="Nombre del grupo de licencias del que desasignar al buzón")]
+  [Parameter(Mandatory=$true, HelpMessage="Nombre del grupo de licencias del que desasignar al buzon")]
   [ValidateNotNullOrEmpty()]
   [string]$NombreGrupoLicencias
 )

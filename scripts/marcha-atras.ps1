@@ -55,7 +55,7 @@ $buzonesCompartidosConFw | ForEach-Object {
 
   Set-Mailbox -Identity $buzon -CustomAttribute12 $licenciaAnterior -CustomAttribute13 $grupoLicenciasAnterior -CustomAttribute14 $politicaRetencionAnterior -CustomAttribute15 $buzonUsuarioConvertido -WhatIf:$WhatIfPreference -ErrorAction SilentlyContinue
 
-  Write-Output "${buzon}: marcha atrás tipo-buzón: $( $buzonUsuarioConvertido ? '❌' : '✅' ), política-retención: $( $politicaRetencionAnterior ? '❌' : '✅' ), grupo-licencias: $( $grupoLicenciasAnterior ? '❌' : '✅' ), licencias: $( $licenciaAnterior ? '❌' : '✅' )"
+  Write-Output "${buzon}: marcha atras tipo-buzon: $( $buzonUsuarioConvertido ? 'KO' : 'ok' ), politica-retencion: $( $politicaRetencionAnterior ? 'KO' : 'ok' ), grupo-licencias: $( $grupoLicenciasAnterior ? 'KO' : 'ok' ), licencias: $( $licenciaAnterior ? 'KO' : 'ok' )"
 }
 
 $politicaRentencionAnterior = "${PREFIJO_POLITICA_RETENCION}${DOMINIO_FW}"
@@ -64,17 +64,17 @@ try {
   if ($politica) {
     $reglasRetencion = $politica.RetentionPolicyTagLinks
     Remove-RetentionPolicy -Identity $politicaRentencionAnterior -WhatIf:$WhatIfPreference -ErrorAction stop -Confirm:$false
-    Write-Output "${politicaRentencionAnterior}: política de retención borrada"
+    Write-Output "${politicaRentencionAnterior}: politica de retencion borrada"
 
     foreach ($regla in $reglasRetencion) {
       if ($regla.StartsWith($PREFIJO_REGLA_BORRADO)) {
         Remove-RetentionPolicyTag -Identity $regla -WhatIf:$WhatIfPreference -ErrorAction SilentlyContinue -Confirm:$false
-        Write-Output "${regla}: regla de retención borrada"
+        Write-Output "${regla}: regla de retencion borrada"
       }
     }
   }
 } catch {
-  Write-Error "${politicaRentencionAnterior}: error al borrar política de retención - $_"
+  Write-Error "${politicaRentencionAnterior}: error al borrar politica de retencion - $_"
 }
 
 if ($CONECTAR_MS) {

@@ -17,7 +17,7 @@ $buzonesUsuarioConFw | ForEach-Object {
     Set-Mailbox -Identity $buzon -Type Shared -CustomAttribute15 $BUZON_CONVERTIDO -WhatIf:$WhatIfPreference -ErrorAction stop
     Write-Output "${buzon}: convertido a compartido"
   } catch {
-    Write-Error "${buzon}: error al procesar buzón - $_"
+    Write-Error "${buzon}: error al procesar buzon - $_"
   }
 }
 
