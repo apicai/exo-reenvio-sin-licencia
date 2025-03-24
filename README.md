@@ -56,7 +56,7 @@ Puedes ejecutar en cualquier momento el script [`detalles-buzones.ps1`](./script
 
 El script principal a ejecutar para convertir los buzones objetivo con el reenvío al dominio configurado es [`1-convertir-buzones.ps1`](./scripts/1-convertir-buzones.ps1). Machaca el valor que hubiera en `CustomAttribute15` para marcar sus cambios. Puedes ejecutarlo con `-WhatIf` para ver cuáles se procesarían sin alterar nada.
 
-<video src="https://github.com/apicai/exo-reenvio-sin-licencia/raw/refs/heads/main/videos/1-convertir-buzones.mp4">
+<video src="https://github.com/apicai/exo-reenvio-sin-licencia/raw/refs/heads/main/videos/1-convertir-buzones.mp4"/>
 
 ## Reducción del tamaño de los buzones (opcional)
 
